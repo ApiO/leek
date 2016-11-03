@@ -3,6 +3,9 @@ webgl geometry instancing with raycast on particules.
 
 Aim : be able to draw at 60 fps a 1-n tree with huge amount of nodes : we are talking about milions. Each node must be clickable and the overall solution must use the least possible resources.
 
+And why leek ? why not !
+
+
 ##CI & QA
 (later)
 
