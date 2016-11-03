@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A5B19244-8C56-445A-8D57-091969C3EAAE}"
+	ProjectSection(SolutionItems) = preProject
+		index.html = index.html
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "js", "js", "{4030F892-DE98-411E-9054-572C388E3A53}"
+	ProjectSection(SolutionItems) = preProject
+		js\leek.js = js\leek.js
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "css", "css", "{BED4F581-75D1-4E6C-BFFD-24AAE2404B8B}"
+	ProjectSection(SolutionItems) = preProject
+		css\style.css = css\style.css
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{DF4E4C7C-AB1D-4BE1-A1C2-186463A70236}"
+	ProjectSection(SolutionItems) = preProject
+		lib\dat.gui.min.js = lib\dat.gui.min.js
+		lib\Detector.min.js = lib\Detector.min.js
+		lib\stats.min.js = lib\stats.min.js
+		lib\three.min.js = lib\three.min.js
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4030F892-DE98-411E-9054-572C388E3A53} = {A5B19244-8C56-445A-8D57-091969C3EAAE}
+		{BED4F581-75D1-4E6C-BFFD-24AAE2404B8B} = {A5B19244-8C56-445A-8D57-091969C3EAAE}
+		{DF4E4C7C-AB1D-4BE1-A1C2-186463A70236} = {A5B19244-8C56-445A-8D57-091969C3EAAE}
+	EndGlobalSection
+EndGlobal

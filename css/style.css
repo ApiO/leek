@@ -1,0 +1,30 @@
+﻿body {
+    font-family: Monospace;
+    background-color: #f0f0f0;
+    margin: 0;
+    overflow: hidden;
+    color: #424242;
+    font-size: 13px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.info {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    padding: 5px;
+}
+
+a {
+    color:#1aadb5;
+}
+
+#notSupported {
+    width: 50%;
+    margin: auto;
+    border: 2px red solid;
+    margin-top: 20px;
+    padding: 10px;
+    display: none;
+}
