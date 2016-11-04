@@ -5,6 +5,14 @@ Aim : be able to draw at 60 fps a 1-n tree with huge amount of nodes : we are ta
 
 And why leek ? why not !
 
+##Dependencies
+[threejs](https://threejs.org/)
+
+[jquery.3+](https://jquery.com/)
+
+[stats.js](https://github.com/mrdoob/stats.js)
+
+[dat.gui](https://workshop.chromeexperiments.com/examples/gui/#1--Basic-Usage)
 
 ##CI & QA
 (later)
