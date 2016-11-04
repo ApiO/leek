@@ -22,8 +22,8 @@ var Leek = function (renderCallback, compatibilityIssue) {
     self.renderCallback = renderCallback;
     self.compatibilityIssue = compatibilityIssue;
     self.config = {
-        elementNumber: 1000,
-        maxElementNumber: 100000,
+        elementNumber: 100,
+        maxElement: 100000,
         animate: false,
         navigation: { offset: 0.1, zMin: 1, zMax: 10 },
         clearColor: 0x000000,
@@ -63,17 +63,26 @@ var Leek = function (renderCallback, compatibilityIssue) {
         // scene
         self.ctx.scene = new THREE.Scene();
         self._loadGeometry();
+        
+        self.ctx.scene.add(new THREE.AxisHelper(.5));
+
+        var size = 1;
+        var step = .01;
+        var gridHelper = new THREE.GridHelper(size, step);
+        self.ctx.scene.add(gridHelper);
 
         // material
         let material = new THREE.RawShaderMaterial({
-            uniforms: {
-                time: { value: 1.0 },
-                sineTime: { value: 1.0 }
-            },
+            //uniforms: {
+            //    time: { value: 1.0 },
+            //    sineTime: { value: 1.0 }
+            //},
             vertexShader: self.config.shader.vertex.content,
             fragmentShader: self.config.shader.fragment.content,
-            side: THREE.DoubleSide,
-            transparent: true
+            side: THREE.FrontSide,
+            depthTest: false,
+            depthWrite: false,
+            transparent: false
         });
 
         // mesh
@@ -86,15 +95,16 @@ var Leek = function (renderCallback, compatibilityIssue) {
                                         self.config.navigation.zMin,
                                         self.config.navigation.zMax);
         self.ctx.camera.position.z = 2;
+        self.ctx.camera.position.y = .5;
 
         // raycast
         //self.ctx.raycaster = new THREE.Raycaster();
 
         // renderer
         self.ctx.renderer = new THREE.WebGLRenderer();
-        const extension = "ANGLE_instanced_arra2ys";
+        const extension = "ANGLE_instanced_arrays";
         if (!self.ctx.renderer.extensions.get(extension)) {
-            if (compatibilityIssue) {compatibilityIssue();}
+            if (compatibilityIssue) { compatibilityIssue(); }
             return;
         }
         self.ctx.renderer.setClearColor(self.config.clearColor);
@@ -118,48 +128,59 @@ var Leek = function (renderCallback, compatibilityIssue) {
 
         self.geometry.maxInstancedCount = self.config.elementNumber;
 
-        let vertices = new THREE.BufferAttribute(new Float32Array(3 * 3), 3);
-        vertices.setXYZ(0, 0.025, -0.025, 0);
+        // verticies
+        let vertices = new THREE.BufferAttribute(new Float32Array(3 * 4), 4);
+        vertices.setXYZ(0, 0.025, 0.025, 0);
         vertices.setXYZ(1, -0.025, 0.025, 0);
-        vertices.setXYZ(2, 0, 0, 0.025);
-
+        vertices.setXYZ(2, -0.025, -0.025, 0);
+        vertices.setXYZ(3, 0.025, -0.025, 0);
         self.geometry.addAttribute("position", vertices);
 
-        let offsets = new THREE.InstancedBufferAttribute(new Float32Array(self.config.maxElementNumber * 3), 3, 1);
-        for (let i = 0, ul = offsets.count; i < ul; i++) {
-            offsets.setXYZ(i, Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5);
+        /*
+                let indices = new THREE.BufferAttribute(new Uint32Array(6 * self.config.maxElement), 1);
+                for (let i = 0; i < self.config.maxElement; i++) {
+                    offsets.setXYZ(i, Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5);
+                }
+                self.geometry.setIndex(indices);
+        */
+
+        let offsets = new THREE.InstancedBufferAttribute(new Float32Array(self.config.maxElement * 3), 3, 1);
+        for (let i = 0; i < offsets.count; i++) {
+            //offsets.setXYZ(i, Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5);
+            offsets.setXYZ(i, 0, 0, 0);
         }
         self.geometry.addAttribute("offset", offsets);
 
-        let colors = new THREE.InstancedBufferAttribute(new Float32Array(self.config.maxElementNumber * 4), 4, 1);
-        for (let i = 0, ul = colors.count; i < ul; i++) {
-            colors.setXYZW(i, Math.random(), Math.random(), Math.random(), Math.random());
-        }
-        self.geometry.addAttribute("color", colors);
 
-        let vector = new THREE.Vector4();
-        let orientationsStart = new THREE.InstancedBufferAttribute(new Float32Array(self.config.maxElementNumber * 4), 4, 1);
-        for (let i = 0, ul = orientationsStart.count; i < ul; i++) {
-            vector.set(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1);
-            vector.normalize();
-            orientationsStart.setXYZW(i, vector.x, vector.y, vector.z, vector.w);
-        }
-        self.geometry.addAttribute("orientationStart", orientationsStart);
+        //let colors = new THREE.InstancedBufferAttribute(new Float32Array(self.config.maxElement * 4), 4, 1);
+        //for (let i = 0, ul = colors.count; i < ul; i++) {
+        //    colors.setXYZW(i, Math.random(), Math.random(), Math.random(), Math.random());
+        //}
+        //self.geometry.addAttribute("color", colors);
 
-        let orientationsEnd = new THREE.InstancedBufferAttribute(new Float32Array(self.config.maxElementNumber * 4), 4, 1);
-        for (let i = 0, ul = orientationsEnd.count; i < ul; i++) {
-            vector.set(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1);
-            vector.normalize();
-            orientationsEnd.setXYZW(i, vector.x, vector.y, vector.z, vector.w);
-        }
+        //let vector = new THREE.Vector4();
+        //let orientationsStart = new THREE.InstancedBufferAttribute(new Float32Array(self.config.maxElement * 4), 4, 1);
+        //for (let i = 0, ul = orientationsStart.count; i < ul; i++) {
+        //    vector.set(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1);
+        //    vector.normalize();
+        //    orientationsStart.setXYZW(i, vector.x, vector.y, vector.z, vector.w);
+        //}
+        //self.geometry.addAttribute("orientationStart", orientationsStart);
 
-        self.geometry.addAttribute("orientationEnd", orientationsEnd);
+        //let orientationsEnd = new THREE.InstancedBufferAttribute(new Float32Array(self.config.maxElement * 4), 4, 1);
+        //for (let i = 0, ul = orientationsEnd.count; i < ul; i++) {
+        //    vector.set(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1);
+        //    vector.normalize();
+        //    orientationsEnd.setXYZW(i, vector.x, vector.y, vector.z, vector.w);
+        //}
+
+        //self.geometry.addAttribute("orientationEnd", orientationsEnd);
     };
     self._loadGui = function () {
         self.gui = new dat.GUI();
 
         //  builds menu
-        self.gui.add(self.geometry, "maxInstancedCount", 1, self.config.maxElementNumber).listen();
+        self.gui.add(self.geometry, "maxInstancedCount", 1, self.config.maxElement).listen();
         self.gui.add(self.ctx.camera.position, "z", self.config.navigation.zMin, self.config.navigation.zMax).listen();
         self.gui.add(self.config, "animate").listen();
         let colorController = self.gui.addColor(self.config, "clearColor").listen();
@@ -176,6 +197,11 @@ var Leek = function (renderCallback, compatibilityIssue) {
         self.ctx.camera.position.z = 2;
         self.config.clearColor = self.config.defaultClearColor;
         self.ctx.renderer.setClearColor(self.config.clearColor);
+
+        let object = self.ctx.scene.children[0];
+        if (object) {
+            object.rotation.y = 0.0;
+        }
     };
     // events
     self.onWindowResize = function () {
@@ -219,7 +245,7 @@ var Leek = function (renderCallback, compatibilityIssue) {
             const time = performance.now();
             let object = self.ctx.scene.children[0];
             object.rotation.y = time * 0.0005;
-            object.material.uniforms.time.value = time * 0.005;
+            //object.material.uniforms.time.value = time * 0.005;
             //object.material.uniforms.sineTime.value = Math.sin(object.material.uniforms.time.value * 0.05);
         }
 
