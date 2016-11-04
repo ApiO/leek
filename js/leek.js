@@ -8,15 +8,18 @@
 var Leek = function (renderCallback) {
     // atr
     var self = this;
-    self.container = null;
-    self.camera = null;
-    self.scene = null;
-    //self.raycaster = null;
-    self.renderer = null;
+    self.ctx =
+    {
+        camera: null,
+        scene: null,
+        renderer: null
+        //raycaster: null,
+    };
+    self.gui = null;
     self.mouse = null;
+    self.container = null;
     //self.intersected = null;
     self.renderCallback = renderCallback;
-    self.gui = null;
     self.config = {
         elementNumber: 1000,
         maxElementNumber: 100000,
@@ -35,7 +38,20 @@ var Leek = function (renderCallback) {
         $.when(
             self._getShader(self.config.shader.vertex),
             self._getShader(self.config.shader.fragment)
-        ).then(self._initialize, function (data) { console.error("Loading resources failed.", data); });
+        ).then(
+            self._initialize,
+            function (data) { console.error("Loading resources failed.", data); }
+        );
+    };
+    self._getShader = function (shaderInfo) {
+        $.ajax({
+            type: "GET",
+            dataType: "text",
+            url: shaderInfo.path,
+            success: function (data) {
+                shaderInfo.content = data;
+            }
+        });
     };
     self._initialize = function () {
         self.mouse = new THREE.Vector2();
@@ -44,7 +60,7 @@ var Leek = function (renderCallback) {
         document.body.appendChild(self.container);
 
         // scene
-        self.scene = new THREE.Scene();
+        self.ctx.scene = new THREE.Scene();
         self._loadGeometry();
 
         // material
@@ -61,31 +77,34 @@ var Leek = function (renderCallback) {
 
         // mesh
         let mesh = new THREE.Mesh(self.geometry, material);
-        self.scene.add(mesh);
+        self.ctx.scene.add(mesh);
 
         // camera
-        self.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, self.config.navigation.zMin, self.config.navigation.zMax);
-        self.camera.position.z = 2;
+        self.ctx.camera = new THREE.PerspectiveCamera(45,
+                                        window.innerWidth / window.innerHeight,
+                                        self.config.navigation.zMin,
+                                        self.config.navigation.zMax);
+        self.ctx.camera.position.z = 2;
 
         // raycast
-        //self.raycaster = new THREE.Raycaster();
+        //self.ctx.raycaster = new THREE.Raycaster();
 
         // renderer
-        self.renderer = new THREE.WebGLRenderer();
-        if (self.renderer.extensions.get("ANGLE_instanced_arrays") === false) {
+        self.ctx.renderer = new THREE.WebGLRenderer();
+        if (self.ctx.renderer.extensions.get("ANGLE_instanced_arrays") === false) {
             document.getElementById("notSupported").style.display = "block";
             return;
         }
-        self.renderer.setClearColor(self.config.clearColor);
-        self.renderer.setPixelRatio(window.devicePixelRatio);
-        self.renderer.setSize(window.innerWidth, window.innerHeight);
-        self.renderer.sortObjects = false;
-        self.container.appendChild(self.renderer.domElement);
+        self.ctx.renderer.setClearColor(self.config.clearColor);
+        self.ctx.renderer.setPixelRatio(window.devicePixelRatio);
+        self.ctx.renderer.setSize(window.innerWidth, window.innerHeight);
+        self.ctx.renderer.sortObjects = false;
+        self.container.appendChild(self.ctx.renderer.domElement);
 
         // events
-        document.addEventListener("mousemove", self.onDocumentMouseMove, false);
-        //document.addEventListener("click", self.onDocumentClick, false);
-        document.addEventListener("wheel", self.onDocumentMouseWheel);
+        self.container.addEventListener("mousemove", self.onMouseMove, false);
+        self.container.addEventListener("click", self.onClick, false);
+        self.container.addEventListener("wheel", self.onMouseWheel);
         window.addEventListener("resize", self.onWindowResize, false);
 
         self._loadGui();
@@ -139,41 +158,43 @@ var Leek = function (renderCallback) {
 
         //  builds menu
         self.gui.add(self.geometry, "maxInstancedCount", 1, self.config.maxElementNumber).listen();
-        self.gui.add(self.camera.position, "z", self.config.navigation.zMin, self.config.navigation.zMax).listen();
+        self.gui.add(self.ctx.camera.position, "z", self.config.navigation.zMin, self.config.navigation.zMax).listen();
         self.gui.add(self.config, "animate").listen();
-        var colorController = self.gui.addColor(self.config, "clearColor").listen();
+        let colorController = self.gui.addColor(self.config, "clearColor").listen();
         self.gui.add(self, "reset");
 
         // special behavior
         colorController.onChange(function (value) {
-            self.renderer.setClearColor(value);
+            self.ctx.renderer.setClearColor(value);
         });
     };
     self.reset = function () {
         self.geometry.maxInstancedCount = self.config.elementNumber;
         self.config.animate = false;
-        self.camera.position.z = 2;
+        self.ctx.camera.position.z = 2;
         self.config.clearColor = self.config.defaultClearColor;
-        self.renderer.setClearColor(self.config.clearColor);
+        self.ctx.renderer.setClearColor(self.config.clearColor);
     };
     // events
     self.onWindowResize = function () {
-        self.camera.aspect = window.innerWidth / window.innerHeight;
-        self.camera.updateProjectionMatrix();
-        self.renderer.setSize(window.innerWidth, window.innerHeight);
+        self.ctx.camera.aspect = window.innerWidth / window.innerHeight;
+        self.ctx.camera.updateProjectionMatrix();
+        self.ctx.renderer.setSize(window.innerWidth, window.innerHeight);
     };
-    self.onDocumentMouseMove = function (event) {
+    self.onMouseMove = function (event) {
         event.preventDefault();
         self.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         self.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     };
-    //self.onDocumentClick = function () {
-    //    if (self.intersected != null) {
-    //        console.log(self.intersected.uuid);
-    //    }
-    //};
-    self.onDocumentMouseWheel = function (wheelEvent) {
-        let value = self.camera.position.z + (wheelEvent.wheelDelta < 0 ? 1 : -1) * self.config.navigation.offset;
+    self.onClick = function () {
+        console.info("TODO", self.mouse);
+        //if (self.intersected != null) {
+        //    console.log(self.intersected.uuid);
+        //}
+    };
+    self.onMouseWheel = function (wheelEvent) {
+        let value = self.ctx.camera.position.z
+            + (wheelEvent.wheelDelta < 0 ? 1 : -1) * self.config.navigation.offset;
 
         if (value < self.config.navigation.zMin) {
             value = self.config.navigation.zMin;
@@ -181,7 +202,7 @@ var Leek = function (renderCallback) {
             value = self.config.navigation.zMax;
         }
 
-        self.camera.position.z = value;
+        self.ctx.camera.position.z = value;
     };
     // threejs impl
     self.animate = function () {
@@ -194,15 +215,15 @@ var Leek = function (renderCallback) {
     self.render = function () {
         if (self.config.animate) {
             const time = performance.now();
-            let object = self.scene.children[0];
+            let object = self.ctx.scene.children[0];
             object.rotation.y = time * 0.0005;
             object.material.uniforms.time.value = time * 0.005;
             //object.material.uniforms.sineTime.value = Math.sin(object.material.uniforms.time.value * 0.05);
         }
 
         //// find intersections
-        //self.raycaster.setFromCamera(self.mouse, self.camera);
-        //const intersects = self.raycaster.intersectObjects(self.scene.children);
+        //self.ctx.raycaster.setFromCamera(self.mouse, self.ctx.camera);
+        //const intersects = self.ctx.raycaster.intersectObjects(self.ctx.scene.children);
         //if (intersects.length > 0) {
         //    if (self.intersected !== intersects[0].object) {
         //        //console.log(intersects, self.intersected);
@@ -219,17 +240,6 @@ var Leek = function (renderCallback) {
         //    self.intersected = null;
         //}
 
-        self.renderer.render(self.scene, self.camera);
-    };
-    // utils
-    self._getShader = function (shaderInfo) {
-        $.ajax({
-            type: "GET",
-            dataType: "text",
-            url: shaderInfo.path,
-            success: function (data) {
-                shaderInfo.content = data;
-            }
-        });
+        self.ctx.renderer.render(self.ctx.scene, self.ctx.camera);
     };
 };
