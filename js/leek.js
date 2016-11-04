@@ -1,38 +1,9 @@
 /**
  * @author ApiO / https://github.com/ApiO
+ * @license MIT License
  * @from https://github.com/mrdoob/three.js/blob/master/examples/webgl_buffergeometry_instancing.html
  */
 "use strict";
-
-const vertexShader = (["precision highp float;"
-    , "uniform float sineTime;"
-    , "uniform mat4 modelViewMatrix;"
-    , "uniform mat4 projectionMatrix;"
-    , "attribute vec3 position;"
-    , "attribute vec3 offset;"
-    , "attribute vec4 color;"
-    , "attribute vec4 orientationStart;"
-    , "attribute vec4 orientationEnd;"
-    , "varying vec3 vPosition;"
-    , "varying vec4 vColor;"
-    , "void main(){"
-    , "	vPosition = offset * max(abs(sineTime * 2.0 + 1.0), 0.5) + position;"
-    , "	vec4 orientation = normalize(mix(orientationStart, orientationEnd, sineTime));"
-    , "	vec3 vcV = cross(orientation.xyz, vPosition);"
-    , "	vPosition = vcV * (2.0 * orientation.w) + (cross(orientation.xyz, vcV) * 2.0 + vPosition);"
-    , "	vColor = color;"
-    , "	gl_Position = projectionMatrix * modelViewMatrix * vec4(vPosition, 1.0);"
-    , "}"]).join("\n");
-
-const fragmentShader = (["precision highp float;"
-    , "uniform float time;"
-    , "varying vec3 vPosition;"
-    , "varying vec4 vColor;"
-    , "void main() {"
-    , "	vec4 color = vec4( vColor );"
-    , "	color.r += sin( vPosition.x * 10.0 + time ) * 0.5;"
-    , "	gl_FragColor = color;"
-    , "}"]).join("\n");
 
 var Leek = function (renderCallback) {
     // atr
@@ -40,40 +11,66 @@ var Leek = function (renderCallback) {
     self.container = null;
     self.camera = null;
     self.scene = null;
-    self.raycaster = null;
+    //self.raycaster = null;
     self.renderer = null;
     self.mouse = null;
-    self.intersected = null;
+    //self.intersected = null;
     self.renderCallback = renderCallback;
     self.gui = null;
     self.config = {
         elementNumber: 1000,
         maxElementNumber: 100000,
         animate: false,
-        navigation: {
-            offset: 0.1,
-            zMin: 1,
-            zMax: 10
-        },
+        navigation: { offset: 0.1, zMin: 1, zMax: 10 },
         clearColor: 0x000000,
-        defaultClearColor: 0x000000
+        defaultClearColor: 0x000000,
+        shader: {
+            vertex: { path: "./js/shaders/vertex.glsl", content: null },
+            fragment: { path: "./js/shaders/fragment.glsl", content: null }
+        }
     };
-    // func
+    // init
     self.start = function () {
+        // loads ressources and then initialize application
+        $.when(
+            self._getShader(self.config.shader.vertex),
+            self._getShader(self.config.shader.fragment)
+        ).then(self._initialize, function (data) { console.error("Loading resources failed.", data); });
+    };
+    self._initialize = function () {
         self.mouse = new THREE.Vector2();
 
         self.container = document.createElement("div");
         document.body.appendChild(self.container);
 
+        // scene
+        self.scene = new THREE.Scene();
+        self._loadGeometry();
+
+        // material
+        let material = new THREE.RawShaderMaterial({
+            uniforms: {
+                time: { value: 1.0 },
+                sineTime: { value: 1.0 }
+            },
+            vertexShader: self.config.shader.vertex.content,
+            fragmentShader: self.config.shader.fragment.content,
+            side: THREE.DoubleSide,
+            transparent: true
+        });
+
+        // mesh
+        let mesh = new THREE.Mesh(self.geometry, material);
+        self.scene.add(mesh);
+
+        // camera
         self.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, self.config.navigation.zMin, self.config.navigation.zMax);
         self.camera.position.z = 2;
 
-        self.scene = new THREE.Scene();
+        // raycast
+        //self.raycaster = new THREE.Raycaster();
 
-        self._loadData();
-
-        self.raycaster = new THREE.Raycaster();
-
+        // renderer
         self.renderer = new THREE.WebGLRenderer();
         if (self.renderer.extensions.get("ANGLE_instanced_arrays") === false) {
             document.getElementById("notSupported").style.display = "block";
@@ -85,9 +82,9 @@ var Leek = function (renderCallback) {
         self.renderer.sortObjects = false;
         self.container.appendChild(self.renderer.domElement);
 
-        // evt
+        // events
         document.addEventListener("mousemove", self.onDocumentMouseMove, false);
-        document.addEventListener("click", self.onDocumentClick, false);
+        //document.addEventListener("click", self.onDocumentClick, false);
         document.addEventListener("wheel", self.onDocumentMouseWheel);
         window.addEventListener("resize", self.onWindowResize, false);
 
@@ -95,7 +92,7 @@ var Leek = function (renderCallback) {
 
         self.animate();
     };
-    self._loadData = function () {
+    self._loadGeometry = function () {
         self.geometry = new THREE.InstancedBufferGeometry();
 
         self.geometry.maxInstancedCount = self.config.elementNumber;
@@ -136,30 +133,18 @@ var Leek = function (renderCallback) {
         }
 
         self.geometry.addAttribute("orientationEnd", orientationsEnd);
-
-        // material
-        let material = new THREE.RawShaderMaterial({
-            uniforms: {
-                time: { value: 1.0 },
-                sineTime: { value: 1.0 }
-            },
-            vertexShader: vertexShader,
-            fragmentShader: fragmentShader,
-            side: THREE.DoubleSide,
-            transparent: true
-        });
-        let mesh = new THREE.Mesh(self.geometry, material);
-        self.scene.add(mesh);
     };
-    self._loadGui = function() {
+    self._loadGui = function () {
         self.gui = new dat.GUI();
+
+        //  builds menu
         self.gui.add(self.geometry, "maxInstancedCount", 1, self.config.maxElementNumber).listen();
         self.gui.add(self.camera.position, "z", self.config.navigation.zMin, self.config.navigation.zMax).listen();
         self.gui.add(self.config, "animate").listen();
         var colorController = self.gui.addColor(self.config, "clearColor").listen();
         self.gui.add(self, "reset");
-        
-        // tuning
+
+        // special behavior
         colorController.onChange(function (value) {
             self.renderer.setClearColor(value);
         });
@@ -171,6 +156,7 @@ var Leek = function (renderCallback) {
         self.config.clearColor = self.config.defaultClearColor;
         self.renderer.setClearColor(self.config.clearColor);
     };
+    // events
     self.onWindowResize = function () {
         self.camera.aspect = window.innerWidth / window.innerHeight;
         self.camera.updateProjectionMatrix();
@@ -181,24 +167,23 @@ var Leek = function (renderCallback) {
         self.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         self.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     };
-    self.onDocumentClick = function () {
-        if (self.intersected != null) {
-            console.log(self.intersected.uuid);
-        }
-    };
+    //self.onDocumentClick = function () {
+    //    if (self.intersected != null) {
+    //        console.log(self.intersected.uuid);
+    //    }
+    //};
     self.onDocumentMouseWheel = function (wheelEvent) {
-        let value = self.camera.position.z
-            + (wheelEvent.wheelDelta < 0 ? 1 : -1) * self.config.navigation.offset;
+        let value = self.camera.position.z + (wheelEvent.wheelDelta < 0 ? 1 : -1) * self.config.navigation.offset;
 
         if (value < self.config.navigation.zMin) {
             value = self.config.navigation.zMin;
-        }
-        else if (value > self.config.navigation.zMax) {
+        } else if (value > self.config.navigation.zMax) {
             value = self.config.navigation.zMax;
         }
 
         self.camera.position.z = value;
     };
+    // threejs impl
     self.animate = function () {
         requestAnimationFrame(self.animate);
         self.render();
@@ -235,5 +220,16 @@ var Leek = function (renderCallback) {
         //}
 
         self.renderer.render(self.scene, self.camera);
+    };
+    // utils
+    self._getShader = function (shaderInfo) {
+        $.ajax({
+            type: "GET",
+            dataType: "text",
+            url: shaderInfo.path,
+            success: function (data) {
+                shaderInfo.content = data;
+            }
+        });
     };
 };

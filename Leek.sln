@@ -22,8 +22,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{DF4E4C7C-AB1
 	ProjectSection(SolutionItems) = preProject
 		lib\dat.gui.min.js = lib\dat.gui.min.js
 		lib\Detector.min.js = lib\Detector.min.js
+		lib\jquery-3.1.1.min.js = lib\jquery-3.1.1.min.js
 		lib\stats.min.js = lib\stats.min.js
 		lib\three.min.js = lib\three.min.js
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shaders", "shaders", "{1F57E9BC-A78E-496E-B06F-C7A5C479B896}"
+	ProjectSection(SolutionItems) = preProject
+		js\shaders\fragment.glsl = js\shaders\fragment.glsl
+		js\shaders\vertex.glsl = js\shaders\vertex.glsl
 	EndProjectSection
 EndProject
 Global
@@ -34,5 +41,6 @@ Global
 		{4030F892-DE98-411E-9054-572C388E3A53} = {A5B19244-8C56-445A-8D57-091969C3EAAE}
 		{BED4F581-75D1-4E6C-BFFD-24AAE2404B8B} = {A5B19244-8C56-445A-8D57-091969C3EAAE}
 		{DF4E4C7C-AB1D-4BE1-A1C2-186463A70236} = {A5B19244-8C56-445A-8D57-091969C3EAAE}
+		{1F57E9BC-A78E-496E-B06F-C7A5C479B896} = {4030F892-DE98-411E-9054-572C388E3A53}
 	EndGlobalSection
 EndGlobal
