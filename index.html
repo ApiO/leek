@@ -27,11 +27,16 @@
         var stats = new Stats();
         document.body.appendChild(stats.dom);
 
-        var leek = new Leek(function () {
-            stats.update();
-        });
-
+        var leek = new Leek(renderCallback, compatibilityIssue);
         leek.start();
+
+        function renderCallback() {
+            stats.update();
+        };
+
+        function compatibilityIssue() {
+            document.getElementById("notSupported").style.display = "block";
+        };
     </script>
 </body>
 </html>

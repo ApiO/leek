@@ -5,7 +5,7 @@
  */
 "use strict";
 
-var Leek = function (renderCallback) {
+var Leek = function (renderCallback, compatibilityIssue) {
     // atr
     var self = this;
     self.ctx =
@@ -20,6 +20,7 @@ var Leek = function (renderCallback) {
     self.container = null;
     //self.intersected = null;
     self.renderCallback = renderCallback;
+    self.compatibilityIssue = compatibilityIssue;
     self.config = {
         elementNumber: 1000,
         maxElementNumber: 100000,
@@ -91,8 +92,9 @@ var Leek = function (renderCallback) {
 
         // renderer
         self.ctx.renderer = new THREE.WebGLRenderer();
-        if (self.ctx.renderer.extensions.get("ANGLE_instanced_arrays") === false) {
-            document.getElementById("notSupported").style.display = "block";
+        const extension = "ANGLE_instanced_arra2ys";
+        if (!self.ctx.renderer.extensions.get(extension)) {
+            if (compatibilityIssue) {compatibilityIssue();}
             return;
         }
         self.ctx.renderer.setClearColor(self.config.clearColor);
@@ -206,7 +208,7 @@ var Leek = function (renderCallback) {
     };
     // threejs impl
     self.animate = function () {
-        requestAnimationFrame(self.animate);
+        window.requestAnimationFrame(self.animate);
         self.render();
         if (self.renderCallback !== null) {
             self.renderCallback();
