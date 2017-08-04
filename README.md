@@ -14,10 +14,15 @@ And why leek ? why not !
 
 [dat.gui](https://workshop.chromeexperiments.com/examples/gui/#1--Basic-Usage)
 
+<<<<<<< HEAD
 [TrackballControls] https://github.com/mrdoob/three.js/blob/master/examples/js/controls/TrackballControls.js
 
 ## CI & QA
 (later)
+=======
+## CI & QA
+(later maybe)
+>>>>>>> master
 
 ## License
 
