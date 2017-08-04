@@ -1,36 +1,51 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A5B19244-8C56-445A-8D57-091969C3EAAE}"
-	ProjectSection(SolutionItems) = preProject
-		index.html = index.html
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "js", "js", "{4030F892-DE98-411E-9054-572C388E3A53}"
 	ProjectSection(SolutionItems) = preProject
-		js\leek.js = js\leek.js
+		src\js\leek.js = src\js\leek.js
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "css", "css", "{BED4F581-75D1-4E6C-BFFD-24AAE2404B8B}"
 	ProjectSection(SolutionItems) = preProject
-		css\style.css = css\style.css
+		src\css\style.css = src\css\style.css
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{DF4E4C7C-AB1D-4BE1-A1C2-186463A70236}"
 	ProjectSection(SolutionItems) = preProject
-		lib\dat.gui.min.js = lib\dat.gui.min.js
-		lib\Detector.min.js = lib\Detector.min.js
-		lib\jquery-3.1.1.min.js = lib\jquery-3.1.1.min.js
-		lib\stats.min.js = lib\stats.min.js
-		lib\three.min.js = lib\three.min.js
+		src\lib\dat.gui.min.js = src\lib\dat.gui.min.js
+		src\lib\Detector.min.js = src\lib\Detector.min.js
+		src\lib\jquery.min.js = src\lib\jquery.min.js
+		src\lib\stats.min.js = src\lib\stats.min.js
+		src\lib\three.min.js = src\lib\three.min.js
+		src\lib\TrackballControls.js = src\lib\TrackballControls.js
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shaders", "shaders", "{1F57E9BC-A78E-496E-B06F-C7A5C479B896}"
 	ProjectSection(SolutionItems) = preProject
-		js\shaders\fragment.glsl = js\shaders\fragment.glsl
-		js\shaders\vertex.glsl = js\shaders\vertex.glsl
+		src\js\shaders\fragment.glsl = src\js\shaders\fragment.glsl
+		src\js\shaders\vertex.glsl = src\js\shaders\vertex.glsl
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{492156B5-0371-4B0E-AC66-E82C471208DA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{A01F1FDB-0741-401E-82F1-245473AA6423}"
+	ProjectSection(SolutionItems) = preProject
+		build\script.ps1 = build\script.ps1
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demo", "demo", "{8C1753C4-53BB-44B1-B193-2469F1364D26}"
+	ProjectSection(SolutionItems) = preProject
+		demo\index.html = demo\index.html
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ts", "ts", "{CC7AE877-A124-4F99-B9CB-6CBCAE3412C8}"
+	ProjectSection(SolutionItems) = preProject
+		src\ts\leek.ts = src\ts\leek.ts
 	EndProjectSection
 EndProject
 Global
@@ -38,9 +53,16 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{4030F892-DE98-411E-9054-572C388E3A53} = {A5B19244-8C56-445A-8D57-091969C3EAAE}
-		{BED4F581-75D1-4E6C-BFFD-24AAE2404B8B} = {A5B19244-8C56-445A-8D57-091969C3EAAE}
-		{DF4E4C7C-AB1D-4BE1-A1C2-186463A70236} = {A5B19244-8C56-445A-8D57-091969C3EAAE}
+		{4030F892-DE98-411E-9054-572C388E3A53} = {492156B5-0371-4B0E-AC66-E82C471208DA}
+		{BED4F581-75D1-4E6C-BFFD-24AAE2404B8B} = {492156B5-0371-4B0E-AC66-E82C471208DA}
+		{DF4E4C7C-AB1D-4BE1-A1C2-186463A70236} = {492156B5-0371-4B0E-AC66-E82C471208DA}
 		{1F57E9BC-A78E-496E-B06F-C7A5C479B896} = {4030F892-DE98-411E-9054-572C388E3A53}
+		{492156B5-0371-4B0E-AC66-E82C471208DA} = {A5B19244-8C56-445A-8D57-091969C3EAAE}
+		{A01F1FDB-0741-401E-82F1-245473AA6423} = {A5B19244-8C56-445A-8D57-091969C3EAAE}
+		{8C1753C4-53BB-44B1-B193-2469F1364D26} = {A5B19244-8C56-445A-8D57-091969C3EAAE}
+		{CC7AE877-A124-4F99-B9CB-6CBCAE3412C8} = {492156B5-0371-4B0E-AC66-E82C471208DA}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0DFFEA45-A53C-4A64-A19A-635DE907A151}
 	EndGlobalSection
 EndGlobal

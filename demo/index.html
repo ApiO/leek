@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Leek sample</title>
+    <meta name="description" content="Sample for leekjs">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link type="text/css" media="all" href="../src/css/style.css" rel="stylesheet">
+    <script type="text/javascript" src="../src/lib/three.min.js"></script>
+    <script type="text/javascript" src="../src/lib/TrackballControls.js"></script>
+    <script type="text/javascript" src="../src/lib/stats.min.js"></script>
+    <script type="text/javascript" src="../src/lib/dat.gui.min.js"></script>
+    <script type="text/javascript" src="../src/lib/Detector.min.js"></script>
+    <script type="text/javascript" src="../src/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="../src/js/leek.js"></script>
+</head>
+<body>
+    <div class="info">
+        <a href="http://threejs.org" target="_blank">three.js</a> - instancing & raycast demo (single triangle)
+        <div id="notSupported">Sorry your graphics card + browser does not support hardware instancing</div>
+    </div>
+    <script type="text/javascript">
+        $(function () {
+            "use strict";
+
+            if (!Detector.webgl) Detector.addGetWebGLMessage();
+
+            var stats = new Stats();
+            document.body.appendChild(stats.dom);
+
+            const leek = new Leek(renderCallback, compatibilityIssue);
+            leek.start();
+
+            function renderCallback() {
+                stats.update();
+            };
+
+            function compatibilityIssue() {
+                document.getElementById("notSupported").style.display = "block";
+            };//*/
+        });
+    </script>
+</body>
+</html>
