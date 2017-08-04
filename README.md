@@ -5,7 +5,7 @@ Aim : be able to draw at 60 fps a 1-n tree with huge amount of nodes : we are ta
 
 And why leek ? why not !
 
-##Dependencies
+## Dependencies
 [threejs](https://threejs.org/)
 
 [jquery.3+](https://jquery.com/)
@@ -14,10 +14,12 @@ And why leek ? why not !
 
 [dat.gui](https://workshop.chromeexperiments.com/examples/gui/#1--Basic-Usage)
 
-##CI & QA
+[TrackballControls] https://github.com/mrdoob/three.js/blob/master/examples/js/controls/TrackballControls.js
+
+## CI & QA
 (later)
 
-##License
+## License
 
 MIT License
 
