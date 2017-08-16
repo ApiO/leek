@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.0
+VisualStudioVersion = 15.0.26730.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A5B19244-8C56-445A-8D57-091969C3EAAE}"
 EndProject
@@ -12,6 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "js", "js", "{4030F892-DE98-
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "css", "css", "{BED4F581-75D1-4E6C-BFFD-24AAE2404B8B}"
 	ProjectSection(SolutionItems) = preProject
+		src\css\dat.gui.min.css = src\css\dat.gui.min.css
 		src\css\style.css = src\css\style.css
 	EndProjectSection
 EndProject
@@ -40,6 +41,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{A01F1FDB
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demo", "demo", "{8C1753C4-53BB-44B1-B193-2469F1364D26}"
 	ProjectSection(SolutionItems) = preProject
+		demo\favicon.ico = demo\favicon.ico
 		demo\index.html = demo\index.html
 	EndProjectSection
 EndProject
