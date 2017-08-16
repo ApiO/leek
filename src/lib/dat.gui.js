@@ -3685,11 +3685,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var container = document.createElement('div');
 	  container.appendChild(name);
 	  container.appendChild(controller.domElement);
-
-      var formControl = container.querySelectorAll('select, input')[0];
-      if (formControl != undefined)
-      {
-        formControl.id = id;      }
 	
 	  var li = addRow(gui, container, params.before);
 	
@@ -3703,6 +3698,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  augmentController(gui, li, controller);
 	
       gui.__controllers.push(controller);
+
+      var formControl = container.querySelectorAll('select, input')[0];
+      if (formControl != undefined)
+      {
+        formControl.id = id;
+      }
 	
 	  return controller;
 	}

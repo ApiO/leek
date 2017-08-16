@@ -18,6 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "css", "css", "{BED4F581-75D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{DF4E4C7C-AB1D-4BE1-A1C2-186463A70236}"
 	ProjectSection(SolutionItems) = preProject
+		src\lib\dat.gui.js = src\lib\dat.gui.js
 		src\lib\dat.gui.min.js = src\lib\dat.gui.min.js
 		src\lib\Detector.min.js = src\lib\Detector.min.js
 		src\lib\jquery.min.js = src\lib\jquery.min.js
